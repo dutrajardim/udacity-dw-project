@@ -1,2 +1,4 @@
 dwh.cfg
 .ipynb_checkpoints
+.venv
+default-*-*-*-*-*.ipynb
