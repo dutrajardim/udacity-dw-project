@@ -116,8 +116,8 @@ CREATE TABLE IF NOT EXISTS times (
 staging_events_copy = (
     """
 COPY staging_events
-FROM {}
-iam_role {}
+FROM '{}'
+iam_role '{}'
 JSON {}
 """
 ).format(
@@ -129,8 +129,8 @@ JSON {}
 staging_songs_copy = (
     """
 COPY staging_songs
-FROM {}
-iam_role {}
+FROM '{}'
+iam_role '{}'
 """
 ).format(config.get("S3", "SONG_DATA"), config.get("IAM_ROLE", "ARN"))
 
@@ -227,11 +227,11 @@ SELECT * FROM times
 create_table_queries = [
     staging_events_table_create,
     staging_songs_table_create,
-    songplay_table_create,
     user_table_create,
     song_table_create,
     artist_table_create,
     time_table_create,
+    songplay_table_create,
 ]
 
 drop_table_queries = [
