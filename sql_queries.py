@@ -121,9 +121,9 @@ iam_role '{}'
 JSON '{}'
 """
 ).format(
-    config.get("S3", "LOG_DATA"),
-    config.get("IAM_ROLE", "ARN"),
-    config.get("S3", "LOG_JSONPATH"),
+    config["S3"]["LOG_DATA"],
+    config["IAM_ROLE"]["ARN"],
+    config["S3"]["LOG_JSONPATH"],
 )
 
 staging_songs_copy = (
@@ -131,9 +131,13 @@ staging_songs_copy = (
 COPY staging_songs
 FROM '{}'
 iam_role '{}'
-JSON 's3://jsonpaths-dj/songs.json'
+JSON '{}'
 """
-).format(config.get("S3", "SONG_DATA"), config.get("IAM_ROLE", "ARN"))
+).format(
+    config["S3"]["SONG_DATA"],
+    config["IAM_ROLE"]["ARN"],
+    config["S3"]["SONG_JSONPATH"],
+)
 
 # FINAL TABLES
 
@@ -143,15 +147,15 @@ SELECT
     TIMESTAMP 'epoch' + ts / 1000 * interval '1 second' as start_time,
     userId as user_id,
     level,
-    songs.song_id,
-    songs.artist_id,
+    staging_songs.song_id,
+    staging_songs.artist_id,
     sessionId as session_id,
     location,
     userAgent as user_agent
 FROM staging_events 
-LEFT JOIN songs ON 
-    staging_events.song = songs.title AND
-    ROUND(staging_events.length, 3) = ROUND(songs.duration, 3)
+LEFT JOIN staging_songs ON 
+    staging_events.song = staging_songs.title AND
+    ROUND(staging_events.length, 3) = ROUND(staging_songs.duration, 3)
 EXCEPT
 SELECT 
     start_time, 
@@ -244,6 +248,7 @@ create_staging_table_queries = [
 ]
 
 copy_table_queries = [staging_events_copy, staging_songs_copy]
+
 insert_table_queries = [
     song_table_insert,
     songplay_table_insert,
