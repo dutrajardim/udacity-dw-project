@@ -18,7 +18,7 @@ time_table_drop = "DROP TABLE IF EXISTS times"
 # CREATE TABLES
 
 staging_events_table_create = """
-CREATE TABLE IF NOT EXISTS staging_events (
+CREATE TEMPORARY TABLE IF NOT EXISTS staging_events (
     artist VARCHAR,
     auth VARCHAR(50),
     firstName VARCHAR(50),
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS staging_events (
 """
 
 staging_songs_table_create = """
-CREATE TABLE IF NOT EXISTS staging_songs (
+CREATE TEMPORARY TABLE IF NOT EXISTS staging_songs (
     artist_id VARCHAR(18),
     artist_latitude NUMERIC(8,6),
     artist_location VARCHAR,
@@ -231,8 +231,6 @@ create_table_queries = [
 ]
 
 drop_table_queries = [
-    # staging_events_table_drop,
-    # staging_songs_table_drop,
     songplay_table_drop,
     user_table_drop,
     song_table_drop,
@@ -240,7 +238,7 @@ drop_table_queries = [
     time_table_drop,
 ]
 
-create_temp_table_queries = [
+create_staging_table_queries = [
     staging_events_table_create,
     staging_songs_table_create,
 ]

@@ -3,7 +3,7 @@ import psycopg2
 from sql_queries import (
     copy_table_queries,
     insert_table_queries,
-    create_temp_table_queries,
+    create_staging_table_queries,
 )
 
 
@@ -14,9 +14,9 @@ def load_staging_tables(cur, conn):
         conn.commit()
 
 
-def create_temp_tables(cur, conn):
+def create_staging_tables(cur, conn):
     print("Creating staging tables.")
-    for query in create_temp_table_queries:
+    for query in create_staging_table_queries:
         cur.execute(query)
         conn.commit()
 
@@ -38,8 +38,8 @@ def main():
     )
     cur = conn.cursor()
 
-    # create_temp_tables(cur, conn)
-    # load_staging_tables(cur, conn)
+    create_staging_tables(cur, conn)
+    load_staging_tables(cur, conn)
     insert_tables(cur, conn)
 
     conn.close()
